@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { SubscriptionDB } from '../utils/types';
+import { SubscriptionDB } from '../types/types';
 
 const SubscriptionsSchema: Schema = new Schema({
   endpoint: {

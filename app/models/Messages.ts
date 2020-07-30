@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { MessageDB } from '../utils/types';
+import { MessageDB } from '../types/types';
 
 const MessageDBSchema: Schema = new Schema({
   uuid: {

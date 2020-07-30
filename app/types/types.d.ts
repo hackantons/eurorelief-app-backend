@@ -1,12 +1,5 @@
 import { Document } from 'mongoose';
 
-export interface ErrorReturn {
-  status: number;
-  code: string;
-  text: string;
-  trace?: string;
-}
-
 export interface Subscription {
   endpoint: string;
   p256dh: string;

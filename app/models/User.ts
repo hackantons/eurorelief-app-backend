@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { UserDB } from '../utils/types';
+import { UserDB } from '../types/types';
 
 const UserDBSchema: Schema = new Schema({
   uuid: {
