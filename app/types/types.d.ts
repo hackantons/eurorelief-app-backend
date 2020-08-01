@@ -11,7 +11,8 @@ export interface SubscriptionDB extends Subscription, Document {}
 
 export interface User {
   uuid: string;
-  phone: string;
+  password?: string;
+  phone?: string;
 }
 
 export interface UserDB extends User, Document {}

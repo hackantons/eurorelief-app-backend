@@ -14,6 +14,6 @@ const urlBase64ToUint8Array = (base64String: string) => {
   return outputArray;
 };
 
-export const getPublicKey = (req: express.Request, res: express.Response) => {
+export const publicKey = (req: express.Request, res: express.Response) => {
   res.send(urlBase64ToUint8Array(String(process.env.VAPID_PUBLIC_KEY)));
 };

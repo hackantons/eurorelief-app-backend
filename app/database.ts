@@ -1,38 +1,45 @@
 import models from './models';
-import { randomBytes } from 'crypto';
 import { User } from './types/types';
-import { generateToken } from './utils/auth';
+import { md5 } from './utils/cryto';
 
 export const Users = {
-  add: async ({ uuid = '', phone = '' }: User): Promise<User | Error> => {
-    if (phone === '' || uuid === '') {
-      return new Error('Invalid data');
+  add: async ({ uuid, password }: User): Promise<User | Error> => {
+    if (!uuid || !password) {
+      throw new Error('invalid_data');
     }
 
     let user = await models.User.findOne({ uuid });
     if (user) {
-      return new Error('User already set');
+      if (user.password !== '') {
+        throw new Error('already_set');
+      }
+      await models.User.updateOne(
+        { _id: user._id },
+        {
+          uuid,
+          password: md5(password),
+        }
+      );
+    } else {
+      await models.User.create({
+        uuid,
+        password: md5(password),
+      });
     }
 
-    await models.User.create({
-      uuid,
-      phone,
-    });
     return await Users.get(uuid);
   },
-  update: async (uuid: string, userObject: User): Promise<User | Error> => {
-    //userObject = normalizeUser(userObject);
+  update: async (
+    uuid: string,
+    userObject: Partial<User>
+  ): Promise<User | Error> => {
     let user = await models.User.findOne({ uuid });
     if (!user) {
-      return new Error('User not found');
+      return new Error('not_found');
     }
 
     await models.User.updateOne({ _id: user._id }, userObject);
     return await Users.get(uuid);
-  },
-  delete: async (uuid: string): Promise<boolean> => {
-    const deleted = await models.User.deleteOne({ uuid });
-    return deleted.deletedCount === 1;
   },
   get: async (uuid: string): Promise<User | Error> => {
     const user = await models.User.findOne({ uuid });
@@ -43,15 +50,13 @@ export const Users = {
         }
       : new Error('User not found');
   },
-  getAll: async (): Promise<Array<User>> =>
-    (await models.User.find({})).map(user => ({
-      uuid: user.uuid,
-      phone: user.phone,
-    })),
-  generateJWT: async (uuid: string): Promise<string | Error> =>
-    (await models.User.findOne({ uuid }))
-      ? generateToken(uuid, 60 * 60 * 24 * 265)
-      : new Error('User not found'),
+  checkCredentials: async (
+    uuid: string,
+    password: string
+  ): Promise<boolean> => {
+    const user = await models.User.findOne({ uuid });
+    return user ? md5(password) === user.password : false;
+  },
 };
 
 export const Subscriptions = {

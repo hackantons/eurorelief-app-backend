@@ -7,9 +7,12 @@ const UserDBSchema: Schema = new Schema({
     required: true,
     unique: true,
   },
-  phone: {
+  password: {
     type: String,
     required: true,
+  },
+  phone: {
+    type: String,
   },
 });
 

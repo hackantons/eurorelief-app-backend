@@ -5,36 +5,58 @@ import cors from 'cors';
 
 import { ErrorReturn } from './types/express';
 import { connectDB } from './models';
-import { getPublicKey } from './routes/getPublicKey';
+import { publicKey } from './routes/push';
 import {
-  userDelete,
+  signIn,
   userGet,
-  userJwtValidate,
-  userPut,
+  userCreate,
+  userResetPassword,
   userUpdate,
 } from './routes/user';
+import { prepareRequest, authUser, authAdmin } from './middleware/authenticate';
+import { resError } from './utils/auth';
 
 const PORT = Number(process.env.PORT) || 8080;
 
 const app: express.Application = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(prepareRequest);
+
+/**
+ * Auth
+ */
+
+app.get('/signin/', signIn);
 
 /**
  * Push
  */
 
-app.get('/key/', getPublicKey);
+app.get('/push/key/', publicKey);
 
 /**
- * Users
+ * User
  */
 
-app.get('/user/:uuid', userGet);
-app.put('/user/', userPut);
-app.put('/user/:userID', userUpdate);
-app.delete('/user/:userID', userDelete);
-app.get('/user/jwt/validate/', userJwtValidate);
+app.get('/user/', userGet);
+app.put('/user/', userCreate);
+app.post('/user/update/', authUser, userUpdate);
+app.post('/user/reset/', authAdmin, userResetPassword);
+
+/**
+ * Subscriptions
+ */
+
+// put a subscription to a uuid
+app.put('/subscription/', () => {});
+
+/**
+ * Messages
+ */
+
+// put a message to a uuid
+app.put('/message/', () => {});
 
 /**
  * General error handling
@@ -43,11 +65,7 @@ app.get('/user/jwt/validate/', userJwtValidate);
 app.all(
   '*',
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    next({
-      status: 400,
-      code: 'invalid_request',
-      text: 'Invalid request',
-    });
+    next(resError[400]);
   }
 );
 
@@ -58,12 +76,7 @@ app.use(
     res: express.Response,
     next: express.NextFunction
   ) => {
-    const defaultError: ErrorReturn = {
-      status: 500,
-      code: 'error',
-      text: 'An error occured',
-      trace: '',
-    };
+    const defaultError: ErrorReturn = resError[500];
 
     const error: ErrorReturn = {
       ...defaultError,

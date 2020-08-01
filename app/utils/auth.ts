@@ -1,55 +1,66 @@
 import jwt from 'jsonwebtoken';
-import { ErrorReturn, RequestHeaders } from '../types/express';
+import { createCipheriv, createDecipheriv, createHash } from 'crypto';
+import { ErrorReturn } from '../types/express';
 
-export const forbiddenObject: ErrorReturn = {
-  status: 403,
-  code: 'no_permission',
-  text: "You don't have permission to access",
+const key = createHash('sha256')
+  .update(String(process.env.CRYPTO_KEY))
+  .digest('base64')
+  .substr(0, 32);
+
+const iv = String(process.env.CRYPTO_IV);
+
+export const encrypt = (text: string): string => {
+  const cipher = createCipheriv('aes-256-cbc', Buffer.from(key), iv);
+  let encrypted = cipher.update(text);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  return encrypted.toString('hex');
 };
 
-const isMaster = (key: string): boolean => key === process.env.MASTER_KEY;
-
-const getUserByToken = (token: string): number | false => {
-  let decoded;
-  try {
-    decoded = Object(jwt.verify(token, String(process.env.JWT_SECRET)));
-  } catch (err) {
-    return false;
-  }
-  return Number(decoded.userId);
+export const decrypt = (text: string): string => {
+  const encryptedText = Buffer.from(text, 'hex');
+  const decipher = createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
+  let decrypted = decipher.update(encryptedText);
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+  return decrypted.toString();
 };
 
-export const generateToken = (uuid: string, expires: number): string =>
-  jwt.sign({ uuid }, String(process.env.JWT_SECRET), {
-    expiresIn: expires,
-  });
-
-export const authenticate = (
-  headers: RequestHeaders
-): number | 'master' | false => {
-  const token = (headers.authorization || '').replace('Bearer ', '');
-  if (isMaster(token)) {
-    return 'master';
-  }
-  return getUserByToken(token);
+export const authJWT = {
+  generate: (uuid: string, expires: number = 60 * 60 * 24): string =>
+    jwt.sign({ uuid: encrypt(uuid) }, String(process.env.JWT_SECRET), {
+      expiresIn: expires,
+    }),
+  verify: (token: string): string | false => {
+    let decoded;
+    try {
+      decoded = Object(jwt.verify(token, String(process.env.JWT_SECRET)));
+    } catch (err) {
+      return false;
+    }
+    return String(decrypt(decoded.uuid));
+  },
 };
 
-export const authenticateClient = (headers: RequestHeaders): boolean =>
-  authenticate(headers) === 'master' ||
-  typeof process.env.ALLOWED_HOSTS === 'undefined' ||
-  process.env.ALLOWED_HOSTS.split(', ').indexOf(String(headers.origin)) !== -1;
-
-export const authenticateUser = (
-  headers: RequestHeaders,
-  userID: string
-): boolean | number => {
-  const auth = authenticate(headers);
-  if (userID === 'me' && auth === 'master') {
-    return false;
-  }
-  const numericUserID = Number(userID === 'me' ? auth : userID);
-  return auth === 'master' || auth === numericUserID ? numericUserID : false;
+export const resError: {
+  [k: number]: ErrorReturn;
+} = {
+  400: {
+    status: 400,
+    code: 'invalid_request',
+    text: 'Invalid request',
+  },
+  403: {
+    status: 403,
+    code: 'no_permission',
+    text: "You don't have permission to access",
+  },
+  404: {
+    status: 404,
+    code: 'not_found',
+    text: 'Resource not found',
+  },
+  500: {
+    status: 500,
+    code: 'error',
+    text: 'An error occured',
+  },
 };
-
-export const authenticateMaster = (headers: RequestHeaders): boolean =>
-  authenticate(headers) === 'master';
