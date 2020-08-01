@@ -21,7 +21,6 @@ const MessageDBSchema: Schema = new Schema({
   },
   seen: {
     type: Date,
-    required: true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

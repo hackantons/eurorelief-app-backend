@@ -13,6 +13,9 @@ import {
   userResetPassword,
   userUpdate,
 } from './routes/user';
+import { addSubscription } from './routes/subscription';
+import { addMessage, getMessagesByUser } from './routes/message';
+
 import { prepareRequest, authUser, authAdmin } from './middleware/authenticate';
 import { resError } from './utils/auth';
 
@@ -48,15 +51,14 @@ app.post('/user/reset/', authAdmin, userResetPassword);
  * Subscriptions
  */
 
-// put a subscription to a uuid
-app.put('/subscription/', () => {});
+app.put('/subscription/', authUser, addSubscription);
 
 /**
  * Messages
  */
 
-// put a message to a uuid
-app.put('/message/', () => {});
+app.put('/message/', authAdmin, addMessage);
+app.get('/message/', authUser, getMessagesByUser);
 
 /**
  * General error handling

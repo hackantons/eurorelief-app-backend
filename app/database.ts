@@ -1,5 +1,6 @@
+import { v4 as uuidv4 } from 'uuid';
 import models from './models';
-import { User } from './types/types';
+import { User, Subscription, Message, MessageDB } from './types/types';
 import { md5 } from './utils/cryto';
 
 export const Users = {
@@ -60,5 +61,46 @@ export const Users = {
 };
 
 export const Subscriptions = {
-  getAll: () => {},
+  add: async (uuid: string, subscription: Subscription) => {
+    const user = await models.User.findOne({ uuid });
+    if (!user) {
+      throw new Error('invalid_user');
+    }
+    await models.Subscriptions.create({
+      ...subscription,
+      user: user._id,
+    });
+    return models.Subscriptions.findOne({
+      endpoint: subscription.endpoint,
+    });
+  },
+};
+
+export const Messages = {
+  add: async (uuid: string, msg: string) => {
+    const user = await models.User.findOne({ uuid });
+    if (!user) {
+      throw new Error('invalid_user');
+    }
+    const id = uuidv4();
+
+    await models.Messages.create({
+      uuid: id,
+      message: msg,
+      sent: new Date().toISOString(),
+      sentVia: 'push',
+      seen: '',
+      user: user._id,
+    });
+    return models.Messages.findOne({
+      uuid: id,
+    });
+  },
+  getByUser: async (uuid: string): Promise<Array<MessageDB> | Error> => {
+    const user = await models.User.findOne({ uuid });
+    if (!user) {
+      throw new Error('user_not_found');
+    }
+    return models.Messages.find({ user: user._id });
+  },
 };
