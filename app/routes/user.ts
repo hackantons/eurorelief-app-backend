@@ -2,7 +2,7 @@ import express from 'express';
 
 import { Users } from '../database';
 import { randomBytes } from 'crypto';
-import { authJWT, resError } from '../utils/auth';
+import { authJWT, encrypt, resError } from '../utils/auth';
 
 export const signIn = async (
   req: express.Request,
@@ -40,7 +40,10 @@ export const userCreate = async (
       uuid: req.body.uuid,
       password,
     });
-    res.send({ password, ...user });
+    res.send({
+      user: encrypt(user.uuid),
+      password,
+    });
   } catch (e) {
     next(resError[400]);
   }
@@ -65,6 +68,7 @@ export const userUpdate = async (
   try {
     delete req.body.password;
     delete req.body.uuid;
+    // todo: send update to FM
     const updatedUser = await Users.update(res.locals.user, req.body);
     res.send(updatedUser);
   } catch (e) {

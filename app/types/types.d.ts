@@ -4,7 +4,7 @@ export interface Subscription {
   endpoint: string;
   p256dh: string;
   auth: string;
-  user: string;
+  user?: string;
 }
 
 export interface SubscriptionDB extends Subscription, Document {}
@@ -23,7 +23,7 @@ export interface Message {
   sent: string;
   sentVia: string;
   seen: string;
-  user: string;
+  user?: string;
 }
 
 export interface MessageDB extends Message, Document {}

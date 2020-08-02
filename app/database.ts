@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import models from './models';
-import { User, Subscription, Message, MessageDB } from './types/types';
+import { User, Subscription, Message } from './types/types';
 import { md5 } from './utils/cryto';
 
 export const Users = {
-  add: async ({ uuid, password }: User): Promise<User | Error> => {
+  add: async ({ uuid, password }: User): Promise<User> => {
     if (!uuid || !password) {
       throw new Error('invalid_data');
     }
@@ -30,26 +30,24 @@ export const Users = {
 
     return await Users.get(uuid);
   },
-  update: async (
-    uuid: string,
-    userObject: Partial<User>
-  ): Promise<User | Error> => {
+  update: async (uuid: string, userObject: Partial<User>): Promise<User> => {
     let user = await models.User.findOne({ uuid });
     if (!user) {
-      return new Error('not_found');
+      throw new Error('not_found');
     }
 
     await models.User.updateOne({ _id: user._id }, userObject);
     return await Users.get(uuid);
   },
-  get: async (uuid: string): Promise<User | Error> => {
+  get: async (uuid: string): Promise<User> => {
     const user = await models.User.findOne({ uuid });
-    return user
-      ? {
-          uuid: user.uuid,
-          phone: user.phone,
-        }
-      : new Error('User not found');
+    if (!user) {
+      throw new Error('user_not_found');
+    }
+    return {
+      uuid: user.uuid,
+      phone: user.phone,
+    };
   },
   checkCredentials: async (
     uuid: string,
@@ -61,7 +59,10 @@ export const Users = {
 };
 
 export const Subscriptions = {
-  add: async (uuid: string, subscription: Subscription) => {
+  add: async (
+    uuid: string,
+    subscription: Subscription
+  ): Promise<Subscription> => {
     const user = await models.User.findOne({ uuid });
     if (!user) {
       throw new Error('invalid_user');
@@ -70,9 +71,35 @@ export const Subscriptions = {
       ...subscription,
       user: user._id,
     });
-    return models.Subscriptions.findOne({
+    const sub = await models.Subscriptions.findOne({
       endpoint: subscription.endpoint,
     });
+    if (!sub) {
+      throw new Error('failed');
+    }
+    return {
+      endpoint: sub.endpoint,
+      p256dh: sub.p256dh,
+      auth: sub.auth,
+      user: sub.user,
+    };
+  },
+  getByUser: async (uuid: string): Promise<Array<Subscription>> => {
+    const user = await models.User.findOne({ uuid });
+    if (!user) {
+      throw new Error('user_not_found');
+    }
+
+    const subscriptions = await models.Subscriptions.find({ user: user._id });
+    if (!subscriptions) {
+      return [];
+    }
+
+    return subscriptions.map(sub => ({
+      endpoint: sub.endpoint,
+      p256dh: sub.p256dh,
+      auth: sub.auth,
+    }));
   },
 };
 
@@ -96,11 +123,38 @@ export const Messages = {
       uuid: id,
     });
   },
-  getByUser: async (uuid: string): Promise<Array<MessageDB> | Error> => {
-    const user = await models.User.findOne({ uuid });
+  get: async (uuid: string) => {
+    const msg = await models.Messages.findOne({ uuid });
+    if (!msg) {
+      throw new Error('message_not_found');
+    }
+
+    return {
+      uuid: msg.uuid,
+      message: msg.message,
+      sent: msg.sent,
+      sentVia: msg.sentVia,
+      seen: msg.seen,
+    };
+  },
+  getByUser: async (userUuid: string): Promise<Array<Message>> => {
+    const user = await models.User.findOne({ uuid: userUuid });
     if (!user) {
       throw new Error('user_not_found');
     }
-    return models.Messages.find({ user: user._id });
+
+    const messages = await models.Messages.find({ user: user._id });
+    if (!messages) {
+      return [];
+    }
+
+    return await Promise.all(messages.map(msg => Messages.get(msg.uuid)));
+  },
+  update: async (
+    uuid: string,
+    messageObject: Partial<Message>
+  ): Promise<Message> => {
+    await models.Messages.updateOne({ uuid }, messageObject);
+    return await Messages.get(uuid);
   },
 };

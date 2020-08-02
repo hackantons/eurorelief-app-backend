@@ -14,7 +14,11 @@ import {
   userUpdate,
 } from './routes/user';
 import { addSubscription } from './routes/subscription';
-import { addMessage, getMessagesByUser } from './routes/message';
+import {
+  addMessage,
+  getMessagesByUser,
+  setMessagesAsSeen,
+} from './routes/message';
 
 import { prepareRequest, authUser, authAdmin } from './middleware/authenticate';
 import { resError } from './utils/auth';
@@ -31,6 +35,9 @@ app.use(prepareRequest);
  */
 
 app.get('/signin/', signIn);
+app.get('/get-userid/', () => {
+  // todo: check K.A Number in filemaker and return encrypted UUID
+});
 
 /**
  * Push
@@ -58,7 +65,8 @@ app.put('/subscription/', authUser, addSubscription);
  */
 
 app.put('/message/', authAdmin, addMessage);
-app.get('/message/', authUser, getMessagesByUser);
+app.get('/messages/', authUser, getMessagesByUser);
+app.post('/messages/seen/', authUser, setMessagesAsSeen);
 
 /**
  * General error handling
