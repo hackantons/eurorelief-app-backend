@@ -1,3 +1,4 @@
+/*
 import { sendNotification, setVapidDetails } from 'web-push';
 import { Subscriptions } from '../database';
 import { SubscriptionDB } from '../utils/types';

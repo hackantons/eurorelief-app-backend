@@ -26,7 +26,7 @@ export const decrypt = (text: string): string => {
 
 export const authJWT = {
   generate: (uuid: string, expires: number = 60 * 60 * 24): string =>
-    jwt.sign({ uuid: encrypt(uuid) }, String(process.env.JWT_SECRET), {
+    jwt.sign({ uuid }, String(process.env.JWT_SECRET), {
       expiresIn: expires,
     }),
   verify: (token: string): string | false => {

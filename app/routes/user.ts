@@ -2,31 +2,19 @@ import express from 'express';
 
 import { Users } from '../database';
 import { randomBytes } from 'crypto';
-import { authJWT, encrypt, resError } from '../utils/auth';
-
-export const signIn = async (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  res.send({
-    jwt: (await Users.checkCredentials(
-      String(req.body.uuid),
-      String(req.body.password)
-    ))
-      ? authJWT.generate(String(req.body.uuid), 60 * 60 * 24 * 365)
-      : false,
-  });
-  return;
-};
+import { decrypt, encrypt, resError } from '../utils/auth';
 
 export const userGet = async (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) => {
-  res.send((await Users.get(String(res.locals.user))) || next(resError[404]));
-  return;
+  try {
+    const user = await Users.get(String(res.locals.user));
+    res.send(user);
+  } catch (e) {
+    next(resError[404]);
+  }
 };
 
 export const userCreate = async (
@@ -37,7 +25,7 @@ export const userCreate = async (
   try {
     const password = randomBytes(20).toString('hex');
     const user = await Users.add({
-      uuid: req.body.uuid,
+      uuid: decrypt(req.body.uuid),
       password,
     });
     res.send({

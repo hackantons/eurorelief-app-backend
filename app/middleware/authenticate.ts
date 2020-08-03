@@ -1,5 +1,5 @@
 import express from 'express';
-import { authJWT, resError } from '../utils/auth';
+import { authJWT, decrypt, resError } from '../utils/auth';
 
 const ADMIN_USER = 'admin';
 

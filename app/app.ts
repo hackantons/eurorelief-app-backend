@@ -7,7 +7,6 @@ import { ErrorReturn } from './types/express';
 import { connectDB } from './models';
 import { publicKey } from './routes/push';
 import {
-  signIn,
   userGet,
   userCreate,
   userResetPassword,
@@ -19,6 +18,7 @@ import {
   getMessagesByUser,
   setMessagesAsSeen,
 } from './routes/message';
+import { signIn, resolveCampID } from './routes/auth';
 
 import { prepareRequest, authUser, authAdmin } from './middleware/authenticate';
 import { resError } from './utils/auth';
@@ -34,10 +34,8 @@ app.use(prepareRequest);
  * Auth
  */
 
-app.get('/signin/', signIn);
-app.get('/get-userid/', () => {
-  // todo: check K.A Number in filemaker and return encrypted UUID
-});
+app.post('/auth/signin/', signIn);
+app.post('/auth/resolve-camp-id/', resolveCampID);
 
 /**
  * Push
@@ -49,7 +47,7 @@ app.get('/push/key/', publicKey);
  * User
  */
 
-app.get('/user/', userGet);
+app.get('/user/', authUser, userGet);
 app.put('/user/', userCreate);
 app.post('/user/update/', authUser, userUpdate);
 app.post('/user/reset/', authAdmin, userResetPassword);
