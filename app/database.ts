@@ -119,9 +119,7 @@ export const Messages = {
       seen: '',
       user: user._id,
     });
-    return models.Messages.findOne({
-      uuid: id,
-    });
+    return await Messages.get(id);
   },
   get: async (uuid: string) => {
     const msg = await models.Messages.findOne({ uuid });

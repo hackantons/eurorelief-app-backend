@@ -49,7 +49,7 @@ app.get('/push/key/', publicKey);
 
 app.get('/user/', authUser, userGet);
 app.put('/user/', userCreate);
-app.post('/user/update/', authUser, userUpdate);
+app.post('/user/', authUser, userUpdate);
 app.post('/user/reset/', authAdmin, userResetPassword);
 
 /**
