@@ -1,12 +1,10 @@
-/*
 import { sendNotification, setVapidDetails } from 'web-push';
-import { Subscriptions } from '../database';
-import { SubscriptionDB } from '../utils/types';
+import { Subscription } from '../types/types';
 
 export const createPushNotification = async (
   title: string,
   body: string,
-  subscriptions: SubscriptionDB[] = []
+  subscriptions: Subscription[] = []
 ) => {
   setVapidDetails(
     'mailto:' + process.env.VAPID_EMAIL,
@@ -14,9 +12,6 @@ export const createPushNotification = async (
     String(process.env.VAPID_PRIVATE_KEY)
   );
 
-  if (subscriptions.length === 0) {
-    //subscriptions = await Subscriptions.getAll();
-  }
   const r = [];
   let failed = 0;
   let success = 0;

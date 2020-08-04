@@ -1,6 +1,7 @@
 import express from 'express';
-import { Messages } from '../database';
+import { Messages, Subscriptions } from '../database';
 import { resError } from '../utils/auth';
+import { createPushNotification } from '../push';
 
 export const addMessage = async (
   req: express.Request,
@@ -14,6 +15,14 @@ export const addMessage = async (
      * - if fails, get user phone and try
      * - log output in message
      */
+    const subscriptions = await Subscriptions.getByUser(req.body.user);
+
+    const push = await createPushNotification(
+      'Eurorelief Push',
+      req.body.message,
+      subscriptions
+    );
+
     res.send(await Messages.add(req.body.user, req.body.message));
   } catch (e) {
     next(resError[400]);
@@ -44,6 +53,7 @@ export const setMessagesAsSeen = async (
     messageIDs = messageIDs.filter(
       (id: string) => userMessageIDs.indexOf(id) !== -1
     );
+
     await Promise.all(
       messageIDs.map(async (id: string) => {
         const message = await Messages.get(id);

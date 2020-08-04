@@ -141,7 +141,9 @@ export const Messages = {
       throw new Error('user_not_found');
     }
 
-    const messages = await models.Messages.find({ user: user._id });
+    const messages = await models.Messages.find({ user: user._id }).sort(
+      '-sent'
+    );
     if (!messages) {
       return [];
     }
