@@ -104,7 +104,7 @@ export const Subscriptions = {
 };
 
 export const Messages = {
-  add: async (uuid: string, msg: string) => {
+  add: async (uuid: string, msg: string, title: string) => {
     const user = await models.User.findOne({ uuid });
     if (!user) {
       throw new Error('invalid_user');
@@ -114,6 +114,7 @@ export const Messages = {
     await models.Messages.create({
       uuid: id,
       message: msg,
+      title,
       sent: new Date().toISOString(),
       sentVia: 'push',
       seen: '',
@@ -130,6 +131,7 @@ export const Messages = {
     return {
       uuid: msg.uuid,
       message: msg.message,
+      title: msg.title,
       sent: msg.sent,
       sentVia: msg.sentVia,
       seen: msg.seen,

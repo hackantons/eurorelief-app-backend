@@ -11,6 +11,10 @@ const MessageDBSchema: Schema = new Schema({
     type: String,
     required: true,
   },
+  title: {
+    type: String,
+    required: true,
+  },
   sent: {
     type: Date,
     required: true,

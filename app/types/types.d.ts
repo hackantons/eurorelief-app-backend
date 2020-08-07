@@ -20,6 +20,7 @@ export interface UserDB extends User, Document {}
 export interface Message {
   uuid: string;
   message: string;
+  title: string;
   sent: string;
   sentVia: string;
   seen: string;

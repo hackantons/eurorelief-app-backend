@@ -23,7 +23,9 @@ export const addMessage = async (
       subscriptions
     );
 
-    res.send(await Messages.add(req.body.user, req.body.message));
+    res.send(
+      await Messages.add(req.body.user, req.body.message, req.body.title)
+    );
   } catch (e) {
     next(resError[400]);
   }
