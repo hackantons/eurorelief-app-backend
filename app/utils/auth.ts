@@ -17,6 +17,9 @@ export const encrypt = (text: string): string => {
 };
 
 export const decrypt = (text: string): string => {
+  if (text === '') {
+    return '';
+  }
   const encryptedText = Buffer.from(text, 'hex');
   const decipher = createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
   let decrypted = decipher.update(encryptedText);
