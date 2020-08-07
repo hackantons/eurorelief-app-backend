@@ -17,6 +17,19 @@ export const userGet = async (
   }
 };
 
+export const userGetAll = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const user = await Users.get(String(res.locals.user));
+    res.send(user);
+  } catch (e) {
+    next(resError[404]);
+  }
+};
+
 export const userCreate = async (
   req: express.Request,
   res: express.Response,

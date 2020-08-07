@@ -49,6 +49,16 @@ export const Users = {
       phone: user.phone,
     };
   },
+  getAll: async (): Promise<Array<User>> => {
+    const users = await models.User.find({});
+    if (!users) {
+      throw new Error('user_not_found');
+    }
+    return users.map(user => ({
+      uuid: user.uuid,
+      phone: user.phone,
+    }));
+  },
   checkCredentials: async (
     uuid: string,
     password: string

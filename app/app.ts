@@ -8,6 +8,7 @@ import { connectDB } from './db';
 import { publicKey } from './routes/push';
 import {
   userGet,
+  userGetAll,
   userCreate,
   userResetPassword,
   userUpdate,
@@ -48,6 +49,7 @@ app.get('/push/key/', publicKey);
  */
 
 app.get('/user/', authUser, userGet);
+app.get('/users/', authAdmin, userGetAll);
 app.put('/user/', userCreate);
 app.post('/user/', authUser, userUpdate);
 app.post('/user/reset/', authAdmin, userResetPassword);
