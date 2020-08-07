@@ -10,6 +10,9 @@ const key = createHash('sha256')
 const iv = String(process.env.CRYPTO_IV);
 
 export const encrypt = (text: string): string => {
+  if (text === '') {
+    return '';
+  }
   const cipher = createCipheriv('aes-256-cbc', Buffer.from(key), iv);
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);

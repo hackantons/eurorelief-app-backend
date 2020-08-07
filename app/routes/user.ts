@@ -23,7 +23,7 @@ export const userGetAll = async (
   next: express.NextFunction
 ) => {
   try {
-    const user = await Users.get(String(res.locals.user));
+    const user = await Users.getAll();
     res.send(user);
   } catch (e) {
     next(resError[404]);
