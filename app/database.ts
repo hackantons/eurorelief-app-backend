@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import models from './models';
+import models from './db';
 import { User, Subscription, Message } from './types/types';
 import { md5 } from './utils/cryto';
 

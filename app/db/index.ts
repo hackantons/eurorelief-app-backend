@@ -1,9 +1,7 @@
 import mongoose from 'mongoose';
 import promiseRetry from 'promise-retry';
 
-import User from './User';
-import Subscriptions from './Subscriptions';
-import Messages from './Messages';
+import { User, Subscriptions, Messages } from './models';
 
 const options = {
   useNewUrlParser: true,

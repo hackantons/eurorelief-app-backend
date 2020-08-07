@@ -36,7 +36,7 @@ export const authJWT = {
     } catch (err) {
       return false;
     }
-    return String(decrypt(decoded.uuid));
+    return decoded ? decrypt(String(decoded.uuid)) : '';
   },
 };
 

@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 
 import { ErrorReturn } from './types/express';
-import { connectDB } from './models';
+import { connectDB } from './db';
 import { publicKey } from './routes/push';
 import {
   userGet,
