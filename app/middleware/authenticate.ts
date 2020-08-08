@@ -1,5 +1,6 @@
 import express from 'express';
-import { authJWT, decrypt, resError } from '../utils/auth';
+import { authJWT } from '../utils/auth';
+import { returnError } from '../utils/express';
 
 const ADMIN_USER = 'admin';
 
@@ -30,12 +31,12 @@ export const authUser = (
   next: express.NextFunction
 ) => {
   if (!res.locals.user) {
-    next(resError[404]);
+    next(returnError(400, 'No user specified'));
   } else if (
     !res.locals.auth ||
     (res.locals.auth !== ADMIN_USER && res.locals.user !== res.locals.auth)
   ) {
-    next(resError[403]);
+    next(returnError(403));
   } else {
     next();
   }
@@ -49,7 +50,7 @@ export const authAdmin = (
   next: express.NextFunction
 ) => {
   if (res.locals.auth !== ADMIN_USER) {
-    next(resError[403]);
+    next(returnError(403));
   } else {
     next();
   }

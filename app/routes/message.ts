@@ -1,6 +1,5 @@
 import express from 'express';
 import { Messages, Subscriptions } from '../database';
-import { resError } from '../utils/auth';
 import { createPushNotification } from '../push';
 
 export const addMessage = async (
@@ -27,7 +26,7 @@ export const addMessage = async (
       await Messages.add(req.body.user, req.body.message, req.body.title)
     );
   } catch (e) {
-    next(resError[400]);
+    next(e);
   }
 };
 
@@ -39,7 +38,7 @@ export const getMessagesByUser = async (
   try {
     res.send(await Messages.getByUser(res.locals.user));
   } catch (e) {
-    next(resError[400]);
+    next(e);
   }
 };
 
@@ -67,6 +66,6 @@ export const setMessagesAsSeen = async (
     );
     res.send(await Messages.getByUser(res.locals.user));
   } catch (e) {
-    next(resError[400]);
+    next(e);
   }
 };

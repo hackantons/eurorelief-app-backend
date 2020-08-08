@@ -2,7 +2,7 @@ import express from 'express';
 
 import { Users } from '../database';
 import { randomBytes } from 'crypto';
-import { decrypt, encrypt, resError } from '../utils/auth';
+import { decrypt, encrypt } from '../utils/auth';
 
 export const userGet = async (
   req: express.Request,
@@ -13,7 +13,20 @@ export const userGet = async (
     const user = await Users.get(String(res.locals.user));
     res.send(user);
   } catch (e) {
-    next(resError[404]);
+    next(e);
+  }
+};
+
+export const userDelete = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const user = await Users.delete(String(res.locals.user));
+    res.send(user);
+  } catch (e) {
+    next(e);
   }
 };
 
@@ -26,7 +39,7 @@ export const userGetAll = async (
     const user = await Users.getAll();
     res.send(user);
   } catch (e) {
-    next(resError[404]);
+    next(e);
   }
 };
 
@@ -46,7 +59,7 @@ export const userCreate = async (
       password,
     });
   } catch (e) {
-    next(resError[400]);
+    next(e);
   }
 };
 
@@ -73,6 +86,6 @@ export const userUpdate = async (
     const updatedUser = await Users.update(res.locals.user, req.body);
     res.send(updatedUser);
   } catch (e) {
-    next(resError[500]);
+    next(e);
   }
 };

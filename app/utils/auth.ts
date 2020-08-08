@@ -45,28 +45,3 @@ export const authJWT = {
     return decoded ? decrypt(String(decoded.uuid)) : '';
   },
 };
-
-export const resError: {
-  [k: number]: ErrorReturn;
-} = {
-  400: {
-    status: 400,
-    code: 'invalid_request',
-    text: 'Invalid request',
-  },
-  403: {
-    status: 403,
-    code: 'no_permission',
-    text: "You don't have permission to access",
-  },
-  404: {
-    status: 404,
-    code: 'not_found',
-    text: 'Resource not found',
-  },
-  500: {
-    status: 500,
-    code: 'error',
-    text: 'An error occured',
-  },
-};

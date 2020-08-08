@@ -25,6 +25,6 @@ export const resolveCampID = async (
 ) => {
   // this is only a mock until the Filemaker API is ready
   res.send({
-    uuid: encrypt(req.body.id),
+    uuid: encrypt('uuid-' + req.body.id),
   });
 };

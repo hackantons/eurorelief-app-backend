@@ -2,17 +2,18 @@ import { v4 as uuidv4 } from 'uuid';
 import models from './db';
 import { User, Subscription, Message } from './types/types';
 import { md5 } from './utils/cryto';
+import { returnError } from './utils/express';
 
 export const Users = {
   add: async ({ uuid, password }: User): Promise<User> => {
     if (!uuid || !password) {
-      throw new Error('invalid_data');
+      throw returnError(400, 'no uuid or no password set');
     }
 
     let user = await models.User.findOne({ uuid });
     if (user) {
       if (user.password !== '') {
-        throw new Error('already_set');
+        throw returnError(400, 'User already created');
       }
       await models.User.updateOne(
         { _id: user._id },
@@ -33,7 +34,7 @@ export const Users = {
   update: async (uuid: string, userObject: Partial<User>): Promise<User> => {
     let user = await models.User.findOne({ uuid });
     if (!user) {
-      throw new Error('not_found');
+      throw returnError(400, 'User does not exist');
     }
 
     await models.User.updateOne({ _id: user._id }, userObject);
@@ -42,7 +43,7 @@ export const Users = {
   get: async (uuid: string): Promise<User> => {
     const user = await models.User.findOne({ uuid });
     if (!user) {
-      throw new Error('user_not_found');
+      throw returnError(404, 'User not found');
     }
     return {
       uuid: user.uuid,
@@ -52,12 +53,21 @@ export const Users = {
   getAll: async (): Promise<Array<User>> => {
     const users = await models.User.find({});
     if (!users) {
-      throw new Error('user_not_found');
+      throw returnError(404, 'User not found');
     }
     return users.map(user => ({
       uuid: user.uuid,
       phone: user.phone,
     }));
+  },
+  delete: async (uuid: string): Promise<{ deleted: number }> => {
+    const deleted = await models.User.deleteOne({ uuid });
+    if (!deleted) {
+      throw returnError(404, 'User not found');
+    }
+    return {
+      deleted: deleted.deletedCount || 0,
+    };
   },
   checkCredentials: async (
     uuid: string,
@@ -75,7 +85,7 @@ export const Subscriptions = {
   ): Promise<Subscription> => {
     const user = await models.User.findOne({ uuid });
     if (!user) {
-      throw new Error('invalid_user');
+      throw returnError(400, 'User does not exist');
     }
     await models.Subscriptions.create({
       ...subscription,
@@ -85,7 +95,7 @@ export const Subscriptions = {
       endpoint: subscription.endpoint,
     });
     if (!sub) {
-      throw new Error('failed');
+      throw returnError(500, 'Subscription could not be created');
     }
     return {
       endpoint: sub.endpoint,
@@ -97,7 +107,7 @@ export const Subscriptions = {
   getByUser: async (uuid: string): Promise<Array<Subscription>> => {
     const user = await models.User.findOne({ uuid });
     if (!user) {
-      throw new Error('user_not_found');
+      throw returnError(400, 'User does not exist');
     }
 
     const subscriptions = await models.Subscriptions.find({ user: user._id });
@@ -117,7 +127,7 @@ export const Messages = {
   add: async (uuid: string, msg: string, title: string) => {
     const user = await models.User.findOne({ uuid });
     if (!user) {
-      throw new Error('invalid_user');
+      throw returnError(400, 'User does not exist');
     }
     const id = uuidv4();
 
@@ -135,7 +145,7 @@ export const Messages = {
   get: async (uuid: string) => {
     const msg = await models.Messages.findOne({ uuid });
     if (!msg) {
-      throw new Error('message_not_found');
+      throw returnError(404, 'Message does not exist');
     }
 
     return {
@@ -150,7 +160,7 @@ export const Messages = {
   getByUser: async (userUuid: string): Promise<Array<Message>> => {
     const user = await models.User.findOne({ uuid: userUuid });
     if (!user) {
-      throw new Error('user_not_found');
+      throw returnError(400, 'User does not exist');
     }
 
     const messages = await models.Messages.find({ user: user._id }).sort(

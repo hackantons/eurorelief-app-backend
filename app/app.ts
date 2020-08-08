@@ -8,6 +8,7 @@ import { connectDB } from './db';
 import { publicKey } from './routes/push';
 import {
   userGet,
+  userDelete,
   userGetAll,
   userCreate,
   userResetPassword,
@@ -22,7 +23,7 @@ import {
 import { signIn, resolveCampID } from './routes/auth';
 
 import { prepareRequest, authUser, authAdmin } from './middleware/authenticate';
-import { resError } from './utils/auth';
+import { resError } from './utils/express';
 
 const PORT = Number(process.env.PORT) || 8080;
 
@@ -49,6 +50,7 @@ app.get('/push/key/', publicKey);
  */
 
 app.get('/user/', authUser, userGet);
+app.delete('/user/', authAdmin, userDelete);
 app.get('/users/', authAdmin, userGetAll);
 app.put('/user/', userCreate);
 app.post('/user/', authUser, userUpdate);
