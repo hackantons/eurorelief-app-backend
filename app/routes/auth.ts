@@ -12,7 +12,7 @@ export const signIn = async (
       decrypt(String(req.body.uuid)),
       String(req.body.password)
     ))
-      ? authJWT.generate(String(req.body.uuid), 60 * 60 * 24 * 365)
+      ? authJWT.generate(String(req.body.uuid), 60 * 60 * 24 * 30)
       : false,
   });
   return;

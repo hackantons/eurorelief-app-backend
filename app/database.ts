@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import models from './db';
 import { User, Subscription, Message } from './types/types';
-import { md5 } from './utils/cryto';
+import { md5 } from './utils/crypto';
 import { returnError } from './utils/express';
 
 export const Users = {
