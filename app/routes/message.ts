@@ -21,7 +21,7 @@ export const addMessage = async (
     const subscriptions = await Subscriptions.getByUser(req.body.user);
 
     const push = await createPushNotification(
-      'Eurorelief Push',
+      req.body.title,
       req.body.message,
       subscriptions
     );
