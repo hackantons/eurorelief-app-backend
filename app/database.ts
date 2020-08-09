@@ -87,11 +87,26 @@ export const Subscriptions = {
     if (!user) {
       throw returnError(400, 'User does not exist');
     }
-    await models.Subscriptions.create({
-      ...subscription,
-      user: user._id,
+    let sub = await models.Subscriptions.findOne({
+      endpoint: subscription.endpoint,
     });
-    const sub = await models.Subscriptions.findOne({
+    if (sub) {
+      await models.Subscriptions.updateOne(
+        {
+          endpoint: subscription.endpoint,
+        },
+        {
+          ...subscription,
+          user: user._id,
+        }
+      );
+    } else {
+      await models.Subscriptions.create({
+        ...subscription,
+        user: user._id,
+      });
+    }
+    sub = await models.Subscriptions.findOne({
       endpoint: subscription.endpoint,
     });
     if (!sub) {
