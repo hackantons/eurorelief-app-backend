@@ -1,6 +1,7 @@
 import express from 'express';
 import { Messages, Subscriptions } from '../database';
 import { createPushNotification } from '../push';
+import { returnError } from '../utils/express';
 
 export const addMessage = async (
   req: express.Request,
@@ -8,6 +9,9 @@ export const addMessage = async (
   next: express.NextFunction
 ) => {
   try {
+    if (!req.body.message || !req.body.title) {
+      next(returnError(400, '"Message" or "Title" not set'));
+    }
     /**
      * todo:
      * - get user push subscriptions and try

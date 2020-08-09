@@ -36,7 +36,7 @@ export const Messages = mongoose.model<MessageDB>(
 );
 
 export const Subscriptions = mongoose.model<SubscriptionDB>(
-  'Subscription',
+  'Subscriptions',
   new Schema({
     endpoint: {
       type: String,

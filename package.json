@@ -16,6 +16,7 @@
   "dependencies": {
     "@types/atob": "^2.1.2",
     "@types/cors": "^2.8.6",
+    "@types/cryptr": "^4.0.1",
     "@types/express": "^4.17.2",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mongoose": "^5.7.3",
@@ -26,6 +27,7 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "cryptr": "^5.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",

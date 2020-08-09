@@ -13,7 +13,7 @@ Instead we resolve the registration number to a user ID (UUID). Inside the filem
 There is one endpoint (/auth/resolve-camp-id/) the accepts a registration number and resolves it to the user ID.
 
 ### User ID
-We get the User ID from the Filemaker Database and we use it as the unique identifier. To strengthen the security, we will not expose the user ID directly to the client (except for the initial /auth/resolve-camp-id/ request). Whenever we send the user ID to the client it will be encrypted using the "aes-256-cbc" algorythm.
+We get the User ID from the Filemaker Database and we use it as the unique identifier. To strengthen the security, we will not expose the user ID directly to the client (except for the initial /auth/resolve-camp-id/ request). Whenever we send the user ID to the client it will be encrypted using the "aes-256-ctr" algorythm.
 
 ### Authentication
 To authenticate the client against the App we use a Json Web Token sent via the authorization header as a Bearer Token with every request. The token stays valid for 30 days and will be generated using the /auth/signin/ Endpoint.

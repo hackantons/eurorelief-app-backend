@@ -9,6 +9,7 @@ export const addSubscription = async (
   try {
     res.send(await Subscriptions.add(res.locals.user, req.body));
   } catch (e) {
+    console.log('Error', e);
     next(e);
   }
 };

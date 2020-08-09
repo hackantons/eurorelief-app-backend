@@ -90,6 +90,7 @@ export const Subscriptions = {
     let sub = await models.Subscriptions.findOne({
       endpoint: subscription.endpoint,
     });
+
     if (sub) {
       await models.Subscriptions.updateOne(
         {
@@ -109,6 +110,7 @@ export const Subscriptions = {
     sub = await models.Subscriptions.findOne({
       endpoint: subscription.endpoint,
     });
+
     if (!sub) {
       throw returnError(500, 'Subscription could not be created');
     }
