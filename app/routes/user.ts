@@ -3,6 +3,8 @@ import express from 'express';
 import { Users } from '../database';
 import { randomBytes } from 'crypto';
 import { decrypt, encrypt } from '../utils/auth';
+import { resolveId } from '../utils/filemaker';
+import { returnError } from '../utils/express';
 
 export const userGet = async (
   req: express.Request,
@@ -80,8 +82,14 @@ export const userUpdate = async (
   next: express.NextFunction
 ) => {
   try {
+    const regnumber = req.body.regnumber;
+    const uuid = resolveId(regnumber);
+    if (uuid !== res.locals.user) {
+      next(returnError(403, 'invalid registration number'));
+    }
     delete req.body.password;
     delete req.body.uuid;
+    delete req.body.regnumber;
     // todo: send update to FM
     const updatedUser = await Users.update(res.locals.user, req.body);
     res.send(updatedUser);
