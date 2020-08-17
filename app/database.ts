@@ -10,7 +10,6 @@ export const Users = {
       throw returnError(400, 'no uuid or no password set');
     }
 
-    console.log('USER ADD', uuid, password);
     let user = await models.User.findOne({ uuid });
     if (user) {
       if (user.password !== '') {
