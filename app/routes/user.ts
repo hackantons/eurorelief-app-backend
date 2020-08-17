@@ -2,7 +2,7 @@ import express from 'express';
 
 import { Users } from '../database';
 import { randomBytes } from 'crypto';
-import { decrypt, encrypt } from '../utils/auth';
+import { decrypt, encrypt } from '../utils/crypto';
 import { resolveId } from '../utils/filemaker';
 import { returnError } from '../utils/express';
 

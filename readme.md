@@ -21,7 +21,7 @@ To authenticate the client against the App we use a Json Web Token sent via the 
 ### Signin
 To sign in we use a standard username/password combination.
 - **Username**: encrypted Filemaker user ID
-- **Password**: a 20 characters long random string whose md5 hash will be compared to the hash in the database
+- **Password**: a 20 characters long random string whose sha256 hash will be compared to the hash in the database
 
 Both, username and password will be returned by the PUT /user/ request and stored persistent inside the indexedDB of the client for later usage.
 

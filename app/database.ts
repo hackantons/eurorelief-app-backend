@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import models from './db';
 import { User, Subscription, Message } from './types/types';
-import { md5 } from './utils/crypto';
+import { sha256 } from './utils/crypto';
 import { returnError } from './utils/express';
 
 export const Users = {
@@ -10,6 +10,7 @@ export const Users = {
       throw returnError(400, 'no uuid or no password set');
     }
 
+    console.log('USER ADD', uuid, password);
     let user = await models.User.findOne({ uuid });
     if (user) {
       if (user.password !== '') {
@@ -19,13 +20,13 @@ export const Users = {
         { _id: user._id },
         {
           uuid,
-          password: md5(password),
+          password: sha256(password),
         }
       );
     } else {
       await models.User.create({
         uuid,
-        password: md5(password),
+        password: sha256(password),
       });
     }
 
@@ -74,7 +75,7 @@ export const Users = {
     password: string
   ): Promise<boolean> => {
     const user = await models.User.findOne({ uuid });
-    return user ? md5(password) === user.password : false;
+    return user ? sha256(password) === user.password : false;
   },
 };
 

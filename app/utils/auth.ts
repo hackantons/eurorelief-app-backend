@@ -1,11 +1,5 @@
 import jwt from 'jsonwebtoken';
-import Cryptr from 'cryptr';
-
-const cryptr = new Cryptr(String(process.env.CRYPTO_KEY));
-
-export const encrypt = (text: string): string => cryptr.encrypt(text);
-
-export const decrypt = (text: string): string => cryptr.decrypt(text);
+import { decrypt } from './crypto';
 
 export const authJWT = {
   generate: (uuid: string, expires: number = 60 * 60 * 24): string =>

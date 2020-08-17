@@ -1,7 +1,8 @@
 import express from 'express';
 import { Users } from '../database';
-import { authJWT, decrypt, encrypt } from '../utils/auth';
+import { authJWT } from '../utils/auth';
 import { resolveId } from '../utils/filemaker';
+import { decrypt, encrypt } from '../utils/crypto';
 
 export const signIn = async (
   req: express.Request,
@@ -24,9 +25,12 @@ export const resolveCampID = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  // this is only a mock until the Filemaker API is ready
-  const uuid = resolveId(req.body.id);
-  res.send({
-    uuid: encrypt(uuid),
-  });
+  try {
+    const uuid = resolveId(req.body.id);
+    res.send({
+      uuid: encrypt(uuid),
+    });
+  } catch (e) {
+    next();
+  }
 };

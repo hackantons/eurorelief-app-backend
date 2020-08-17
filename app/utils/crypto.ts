@@ -1,18 +1,13 @@
-import crypto from 'crypto';
+import { createHmac } from 'crypto';
+import Cryptr from 'cryptr';
 
-export const md5 = (string: string) =>
-  crypto
-    .createHash('md5')
+const cryptr = new Cryptr(String(process.env.CRYPTO_KEY));
+
+export const encrypt = (text: string): string => cryptr.encrypt(text);
+
+export const decrypt = (text: string): string => cryptr.decrypt(text);
+
+export const sha256 = (string: string): string =>
+  createHmac('sha256', String(process.env.CRYPTO_SHA_KEY))
     .update(string)
     .digest('hex');
-
-export const randomString = (length: number): string => {
-  let result = '';
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
