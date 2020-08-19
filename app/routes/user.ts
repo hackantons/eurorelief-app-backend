@@ -83,7 +83,7 @@ export const userUpdate = async (
 ) => {
   try {
     const regnumber = req.body.regnumber;
-    const uuid = resolveId(regnumber);
+    const uuid = await resolveId(regnumber);
     if (uuid !== res.locals.user) {
       next(returnError(403, 'invalid registration number'));
     }

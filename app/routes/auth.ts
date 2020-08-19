@@ -3,6 +3,7 @@ import { Users } from '../database';
 import { authJWT } from '../utils/auth';
 import { resolveId } from '../utils/filemaker';
 import { decrypt, encrypt } from '../utils/crypto';
+import { returnError } from '../utils/express';
 
 export const signIn = async (
   req: express.Request,
@@ -26,11 +27,11 @@ export const resolveCampID = async (
   next: express.NextFunction
 ) => {
   try {
-    const uuid = resolveId(req.body.id);
+    const uuid = await resolveId(req.body.id);
     res.send({
       uuid: encrypt(uuid),
     });
   } catch (e) {
-    next();
+    next(returnError(500));
   }
 };
