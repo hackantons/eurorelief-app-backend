@@ -3,7 +3,7 @@ import express from 'express';
 import { Users } from '../database';
 import { randomBytes } from 'crypto';
 import { decrypt, encrypt } from '../utils/crypto';
-import { resolveId } from '../utils/filemaker';
+import { resolveId, setPhoneNumberAdded } from '../utils/filemaker';
 import { returnError } from '../utils/express';
 
 export const userGet = async (
@@ -90,7 +90,12 @@ export const userUpdate = async (
     delete req.body.password;
     delete req.body.uuid;
     delete req.body.regnumber;
-    // todo: send update to FM
+
+    if ('phone' in req.body) {
+      // check phone number https://numverify.com/
+      await setPhoneNumberAdded(uuid, req.body.phone !== '');
+    }
+
     const updatedUser = await Users.update(res.locals.user, req.body);
     res.send(updatedUser);
   } catch (e) {
