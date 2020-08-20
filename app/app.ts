@@ -24,7 +24,8 @@ import { signIn, resolveCampID } from './routes/auth';
 
 import { prepareRequest, authUser, authAdmin } from './middleware/authenticate';
 import { resError } from './utils/express';
-console.log('Hi! Im there!');
+
+console.log("Juhuuu, I'm working");
 
 const PORT = Number(process.env.PORT) || 8080;
 
