@@ -11,7 +11,7 @@
   "scripts": {
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only ./app/app.ts",
-    "prod": "ts-node ./app/app.ts -T"
+    "start": "ts-node ./app/app.ts -T"
   },
   "dependencies": {
     "@types/atob": "^2.1.2",
