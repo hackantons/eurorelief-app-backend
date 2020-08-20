@@ -5,6 +5,7 @@ import { randomBytes } from 'crypto';
 import { decrypt, encrypt } from '../utils/crypto';
 import { resolveId, setPhoneNumberAdded } from '../utils/filemaker';
 import { returnError } from '../utils/express';
+import { isValidPhoneNumber } from '../utils/numverify';
 
 export const userGet = async (
   req: express.Request,
@@ -92,7 +93,13 @@ export const userUpdate = async (
     delete req.body.regnumber;
 
     if ('phone' in req.body) {
-      // check phone number https://numverify.com/
+      if (
+        req.body.phone !== '' &&
+        !(await isValidPhoneNumber(req.body.phone))
+      ) {
+        next(returnError(400, 'Invalid Phone Number'));
+        return;
+      }
       await setPhoneNumberAdded(uuid, req.body.phone !== '');
     }
 
