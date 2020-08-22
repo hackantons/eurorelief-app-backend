@@ -14,6 +14,9 @@ export const userGet = async (
 ) => {
   try {
     const user = await Users.get(String(res.locals.user));
+    if ('uuid' in user) {
+      user.uuid = encrypt(user.uuid);
+    }
     res.send(user);
   } catch (e) {
     next(e);
@@ -39,8 +42,14 @@ export const userGetAll = async (
   next: express.NextFunction
 ) => {
   try {
-    const user = await Users.getAll();
-    res.send(user);
+    let users = await Users.getAll();
+    users = users.map(user => {
+      if ('uuid' in user) {
+        user.uuid = encrypt(user.uuid);
+      }
+      return user;
+    });
+    res.send(users);
   } catch (e) {
     next(e);
   }
