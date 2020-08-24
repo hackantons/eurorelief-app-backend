@@ -102,14 +102,13 @@ export const userUpdate = async (
     delete req.body.regnumber;
 
     if ('phone' in req.body) {
-      if (
-        req.body.phone !== '' &&
-        !(await isValidPhoneNumber(req.body.phone))
-      ) {
-        next(returnError(400, 'Invalid Phone Number'));
+      const phone = req.body.phone.replace(/\s/g, '');
+      if (phone !== '' && !(await isValidPhoneNumber(phone))) {
+        next(returnError(418, 'Invalid Phone Number'));
         return;
       }
-      await setPhoneNumberAdded(uuid, req.body.phone !== '');
+      await setPhoneNumberAdded(uuid, phone !== '');
+      req.body.phone = phone;
     }
 
     const updatedUser = await Users.update(res.locals.user, req.body);

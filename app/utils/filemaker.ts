@@ -49,7 +49,7 @@ export const resolveId = async (regNumber: string): Promise<string> => {
     const record = records[records.length - 1];
     return record.recordId;
   } catch (e) {
-    throw new Error('Number could not be resolved');
+    throw new Error('Registration number could not be resolved');
   }
 };
 
