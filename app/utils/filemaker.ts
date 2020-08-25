@@ -80,6 +80,10 @@ const updateRecord = async (
       }
     );
     const resJSON = await res.json();
+    log(
+      `FILEMAKER UPDATE USER "${record}": ${JSON.stringify(resJSON)}`,
+      logLevels.DEBUG
+    );
     return resJSON.response.modId || 0;
   } catch (e) {
     log(e);

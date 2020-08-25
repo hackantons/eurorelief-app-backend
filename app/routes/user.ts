@@ -66,13 +66,14 @@ export const userCreate = async (
 ) => {
   try {
     const password = randomBytes(20).toString('hex');
+    const uuid = decrypt(req.body.uuid);
     const user = await Users.add({
-      uuid: decrypt(req.body.uuid),
+      uuid,
       password,
     });
 
     if ('lang' in req.body) {
-      await setLang(req.body.uuid, req.body.lang);
+      await setLang(uuid, req.body.lang);
     }
 
     res.send({
