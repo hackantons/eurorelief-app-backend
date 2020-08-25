@@ -2,6 +2,7 @@ import express from 'express';
 import { Messages, Subscriptions } from '../database';
 import { createPushNotification } from '../push';
 import { returnError } from '../utils/express';
+import { log } from '../utils/log';
 
 export const addMessage = async (
   req: express.Request,
@@ -30,6 +31,7 @@ export const addMessage = async (
       await Messages.add(req.body.user, req.body.message, req.body.title)
     );
   } catch (e) {
+    log(e);
     next(e);
   }
 };
@@ -42,6 +44,7 @@ export const getMessagesByUser = async (
   try {
     res.send(await Messages.getByUser(res.locals.user));
   } catch (e) {
+    log(e);
     next(e);
   }
 };
@@ -70,6 +73,7 @@ export const setMessagesAsSeen = async (
     );
     res.send(await Messages.getByUser(res.locals.user));
   } catch (e) {
+    log(e);
     next(e);
   }
 };

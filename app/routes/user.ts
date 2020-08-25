@@ -6,6 +6,7 @@ import { decrypt, encrypt } from '../utils/crypto';
 import { resolveId, setPhoneNumberAdded } from '../utils/filemaker';
 import { returnError } from '../utils/express';
 import { isValidPhoneNumber } from '../utils/numverify';
+import { log } from '../utils/log';
 
 export const userGet = async (
   req: express.Request,
@@ -19,6 +20,7 @@ export const userGet = async (
     }
     res.send(user);
   } catch (e) {
+    log(e);
     next(e);
   }
 };
@@ -32,6 +34,7 @@ export const userDelete = async (
     const user = await Users.delete(String(res.locals.user));
     res.send(user);
   } catch (e) {
+    log(e);
     next(e);
   }
 };
@@ -51,6 +54,7 @@ export const userGetAll = async (
     });
     res.send(users);
   } catch (e) {
+    log(e);
     next(e);
   }
 };
@@ -71,6 +75,7 @@ export const userCreate = async (
       password,
     });
   } catch (e) {
+    log(e);
     next(e);
   }
 };
@@ -80,10 +85,15 @@ export const userResetPassword = async (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const updatedUser = await Users.update(req.body.uuid, {
-    password: '',
-  });
-  res.send({ reset: !!updatedUser });
+  try {
+    const updatedUser = await Users.update(req.body.uuid, {
+      password: '',
+    });
+    res.send({ reset: !!updatedUser });
+  } catch (e) {
+    log(e);
+    next(e);
+  }
 };
 
 export const userUpdate = async (
@@ -114,6 +124,7 @@ export const userUpdate = async (
     const updatedUser = await Users.update(res.locals.user, req.body);
     res.send(updatedUser);
   } catch (e) {
+    log(e);
     next(e);
   }
 };
