@@ -102,6 +102,22 @@ export const userResetPassword = async (
   }
 };
 
+export const userLogout = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const updatedUser = await Users.update(res.locals.user, {
+      password: '',
+    });
+    res.send({ reset: !!updatedUser });
+  } catch (e) {
+    log(e);
+    next(e);
+  }
+};
+
 export const userUpdate = async (
   req: express.Request,
   res: express.Response,
