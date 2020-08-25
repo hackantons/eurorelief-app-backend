@@ -3,7 +3,7 @@ import express from 'express';
 import { Users } from '../database';
 import { randomBytes } from 'crypto';
 import { decrypt, encrypt } from '../utils/crypto';
-import { resolveId, setPhoneNumberAdded } from '../utils/filemaker';
+import { resolveId, setLang, setPhoneNumberAdded } from '../utils/filemaker';
 import { returnError } from '../utils/express';
 import { isValidPhoneNumber } from '../utils/numverify';
 import { log } from '../utils/log';
@@ -70,6 +70,11 @@ export const userCreate = async (
       uuid: decrypt(req.body.uuid),
       password,
     });
+
+    if ('lang' in req.body) {
+      await setLang(req.body.uuid, req.body.lang);
+    }
+
     res.send({
       user: encrypt(user.uuid),
       password,

@@ -60,9 +60,9 @@ export const resolveId = async (regNumber: string): Promise<string> => {
   }
 };
 
-export const setPhoneNumberAdded = async (
+const updateRecord = async (
   record: string,
-  added: boolean
+  fieldData: Object
 ): Promise<number> => {
   try {
     const token = await getLoginToken();
@@ -71,9 +71,7 @@ export const setPhoneNumberAdded = async (
       {
         method: 'PATCH',
         body: JSON.stringify({
-          fieldData: {
-            IsPhoneNumberAdded: added ? 'true' : 'false',
-          },
+          fieldData,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -83,6 +81,34 @@ export const setPhoneNumberAdded = async (
     );
     const resJSON = await res.json();
     return resJSON.response.modId || 0;
+  } catch (e) {
+    log(e);
+    return 0;
+  }
+};
+
+export const setLang = async (
+  record: string,
+  lang: string
+): Promise<number> => {
+  try {
+    return await updateRecord(record, {
+      lang,
+    });
+  } catch (e) {
+    log(e);
+    return 0;
+  }
+};
+
+export const setPhoneNumberAdded = async (
+  record: string,
+  added: boolean
+): Promise<number> => {
+  try {
+    return await updateRecord(record, {
+      IsPhoneNumberAdded: added ? 'true' : 'false',
+    });
   } catch (e) {
     log(e);
     return 0;
