@@ -13,6 +13,7 @@ import {
   userCreate,
   userResetPassword,
   userUpdate,
+  userLogout,
 } from './routes/user';
 import { addSubscription } from './routes/subscription';
 import {
@@ -57,6 +58,7 @@ app.get('/users/', authAdmin, userGetAll);
 app.put('/user/', userCreate);
 app.post('/user/', authUser, userUpdate);
 app.post('/user/reset/', authAdmin, userResetPassword);
+app.post('/user/logout/', authUser, userLogout);
 
 /**
  * Subscriptions
