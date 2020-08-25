@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import { log } from './log';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const FM_HOST = String(process.env.FM_HOST) || '';
@@ -24,6 +25,7 @@ const getLoginToken = async (): Promise<string> => {
     const resJSON = await res.json();
     return resJSON.response.token;
   } catch (e) {
+    log(e, 'FILEMAKER ERROR');
     throw new Error('Request Token failed');
   }
 };
@@ -49,6 +51,7 @@ export const resolveId = async (regNumber: string): Promise<string> => {
     const record = records[records.length - 1];
     return record.recordId;
   } catch (e) {
+    log(e, 'FILEMAKER ERROR');
     throw new Error('Registration number could not be resolved');
   }
 };
@@ -77,6 +80,7 @@ export const setPhoneNumberAdded = async (
     const resJSON = await res.json();
     return resJSON.response.modId || 0;
   } catch (e) {
+    log(e, 'FILEMAKER ERROR');
     return 0;
   }
 };
