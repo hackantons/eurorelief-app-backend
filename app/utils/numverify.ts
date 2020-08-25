@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-const NUMVERIFY_KEY = String(process.env.NUMVERIFY_KEY) || '';
+const NUMVERIFY_KEY = String(process.env.NUMVERIFY_KEY || '');
 
 export const isValidPhoneNumber = async (number: string) => {
   try {
