@@ -33,6 +33,10 @@ export const resolveCampID = async (
 ) => {
   try {
     const uuid = await resolveId(req.body.id);
+    if (!uuid) {
+      next(returnError(404, 'Number could not be resolved'));
+      return;
+    }
     res.send({
       uuid: encrypt(uuid),
     });
