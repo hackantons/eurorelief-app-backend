@@ -32,3 +32,8 @@ curl --location --request GET '{base}/user/?user={userID}' --header 'Authorizati
 // same as
 curl --location --request GET '{base}/user/' --header 'Authorization: Bearer {jwt for userID}'
 ```
+# send message
+```
+curl --location --request PUT '{base}/message/' --header 'Authorization: Bearer {ADMIN_KEY}' --data '{"title":"message title","message":"thi is a message","user":"{userID (filemaker record ID)}"}'
+
+```
