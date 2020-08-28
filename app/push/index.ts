@@ -39,11 +39,5 @@ export const createPushNotification = async (
     }
   }
 
-  return {
-    status: {
-      success,
-      failed,
-    },
-    responses: r,
-  };
+  return r;
 };

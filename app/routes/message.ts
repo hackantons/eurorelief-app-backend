@@ -1,8 +1,10 @@
 import express from 'express';
-import { Messages, Subscriptions } from '../database';
+import { Messages, Subscriptions, Users } from '../database';
 import { createPushNotification } from '../push';
 import { returnError } from '../utils/express';
 import { log } from '../utils/log';
+import { PushLog } from '../types/types';
+import { sendSMS } from '../utils/sms';
 
 export const addMessage = async (
   req: express.Request,
@@ -13,23 +15,75 @@ export const addMessage = async (
     if (!req.body.message || !req.body.title) {
       next(returnError(400, '"Message" or "Title" not set'));
     }
-    /**
-     * todo:
-     * - get user push subscriptions and try
-     * - if fails, get user phone and try
-     * - log output in message
-     */
-    const subscriptions = await Subscriptions.getByUser(req.body.user);
 
-    const push = await createPushNotification(
-      req.body.title,
-      req.body.message,
-      subscriptions
-    );
+    let users = req.body.user;
+    if (typeof users === 'string') {
+      users = [users];
+    }
 
-    res.send(
-      await Messages.add(req.body.user, req.body.message, req.body.title)
-    );
+    const send: Record<
+      string,
+      {
+        user: string;
+        success: boolean;
+        log: PushLog | string;
+      }
+    > = {};
+
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      try {
+        const subscriptions = await Subscriptions.getByUser(user);
+
+        const pushes = await createPushNotification(
+          req.body.title,
+          req.body.message,
+          subscriptions
+        );
+
+        const log: PushLog = pushes.map(push => ({
+          type: 'push',
+          success: push.statusCode < 300,
+          raw: push,
+        }));
+
+        if (
+          req.body.sms === true &&
+          log.filter(entry => entry.success).length === 0
+        ) {
+          const { phone } = await Users.get(user);
+          if (phone) {
+            const sms = await sendSMS(phone, req.body.message);
+            log.push({
+              type: 'sms',
+              success: sms.success,
+              raw: sms.resp,
+            });
+          }
+        }
+
+        await Messages.add(
+          req.body.user,
+          req.body.message,
+          req.body.title,
+          log
+        );
+
+        send[user] = {
+          user,
+          success: log.filter(entry => entry.success).length !== 0,
+          log,
+        };
+      } catch (e) {
+        send[user] = {
+          user,
+          success: false,
+          log: e.text || e.toString(),
+        };
+      }
+    }
+
+    res.send(send);
   } catch (e) {
     log(e);
     next(e);
