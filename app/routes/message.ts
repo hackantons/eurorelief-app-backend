@@ -1,9 +1,10 @@
 import express from 'express';
-import { Messages, Subscriptions } from '../database';
+import { Messages, Subscriptions, Users } from '../database';
 import { createPushNotification } from '../push';
 import { returnError } from '../utils/express';
 import { log } from '../utils/log';
 import { PushLog } from '../types/types';
+import { sendSMS } from '../utils/sms';
 
 export const addMessage = async (
   req: express.Request,
@@ -14,12 +15,6 @@ export const addMessage = async (
     if (!req.body.message || !req.body.title) {
       next(returnError(400, '"Message" or "Title" not set'));
     }
-    /**
-     * todo:
-     * - get user push subscriptions and try
-     * - if fails, get user phone and try
-     * - log output in message
-     */
 
     let users = req.body.user;
     if (typeof users === 'string') {
@@ -56,11 +51,15 @@ export const addMessage = async (
           req.body.sms === true &&
           log.filter(entry => entry.success).length === 0
         ) {
-          log.push({
-            type: 'sms',
-            success: false,
-            raw: { test: 'whatever' },
-          });
+          const { phone } = await Users.get(user);
+          if (phone) {
+            const sms = await sendSMS(phone, req.body.message);
+            log.push({
+              type: 'sms',
+              success: sms.success,
+              raw: sms.resp,
+            });
+          }
         }
 
         await Messages.add(
