@@ -32,8 +32,15 @@ curl --location --request GET '{base}/user/?user={userID}' --header 'Authorizati
 // same as
 curl --location --request GET '{base}/user/' --header 'Authorization: Bearer {jwt for userID}'
 ```
-# send message
-```
-curl --location --request PUT '{base}/message/' --header 'Authorization: Bearer {ADMIN_KEY}' --data '{"title":"message title","message":"thi is a message","user":"{userID (filemaker record ID)}"}'
 
+## send message
 ```
+curl --location --request PUT '{base}/message/' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer {ADMIN_KEY}' \
+--data-raw '{
+    "user": ["{userID (filemaker record ID)}"], // one or more userIDs
+    "title": "message title",
+    "message": "this is a message",
+    "sms": true // if set to false, only push will be sent, not sms (no expanses)
+}'
