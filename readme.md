@@ -44,4 +44,3 @@ curl --location --request PUT '{base}/message/' \
     "message": "this is a message",
     "sms": true // if set to false, only push will be sent, not sms (no expanses)
 }'
-```
