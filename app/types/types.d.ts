@@ -25,6 +25,13 @@ export interface Message {
   sentVia: string;
   seen: string;
   user?: string;
+  log?: PushLog;
 }
 
 export interface MessageDB extends Message, Document {}
+
+export type PushLog = Array<{
+  type: 'push' | 'sms';
+  success: boolean;
+  raw: any;
+}>;

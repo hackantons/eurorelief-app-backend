@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import models from './db';
-import { User, Subscription, Message } from './types/types';
+import { User, Subscription, Message, PushLog } from './types/types';
 import { sha256 } from './utils/crypto';
 import { returnError } from './utils/express';
 
@@ -141,7 +141,7 @@ export const Subscriptions = {
 };
 
 export const Messages = {
-  add: async (uuid: string, msg: string, title: string) => {
+  add: async (uuid: string, msg: string, title: string, log: PushLog) => {
     const user = await models.User.findOne({ uuid });
     if (!user) {
       throw returnError(400, 'User does not exist');
@@ -156,6 +156,7 @@ export const Messages = {
       sentVia: 'push',
       seen: '',
       user: user._id,
+      log,
     });
     return await Messages.get(id);
   },
