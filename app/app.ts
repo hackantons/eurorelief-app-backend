@@ -34,6 +34,10 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(prepareRequest);
 
+app.get('/health/ready/', (req: express.Request, res: express.Response) => {
+  res.send({ status: '👌' });
+});
+
 /**
  * Auth
  */
