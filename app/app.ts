@@ -13,7 +13,6 @@ import {
   userCreate,
   userResetPassword,
   userUpdate,
-  userLogout,
 } from './routes/user';
 import { addSubscription } from './routes/subscription';
 import {
@@ -21,7 +20,7 @@ import {
   getMessagesByUser,
   setMessagesAsSeen,
 } from './routes/message';
-import { signIn, resolveCampID } from './routes/auth';
+import { signIn, resolveCampID, authLogout } from './routes/auth';
 
 import { prepareRequest, authUser, authAdmin } from './middleware/authenticate';
 import { resError } from './utils/express';
@@ -41,6 +40,7 @@ app.use(prepareRequest);
 
 app.post('/auth/signin/', signIn);
 app.post('/auth/resolve-camp-id/', resolveCampID);
+app.post('/auth/logout/', authUser, authLogout);
 
 /**
  * Push
@@ -58,7 +58,6 @@ app.get('/users/', authAdmin, userGetAll);
 app.put('/user/', userCreate);
 app.post('/user/', authUser, userUpdate);
 app.post('/user/reset/', authAdmin, userResetPassword);
-app.post('/user/logout/', authUser, userLogout);
 
 /**
  * Subscriptions
