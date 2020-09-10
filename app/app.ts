@@ -23,7 +23,9 @@ import {
 import { signIn, resolveCampID, authLogout } from './routes/auth';
 
 import { prepareRequest, authUser, authAdmin } from './middleware/authenticate';
-import { resError } from './utils/express';
+import { resError, returnError } from './utils/express';
+import { getLoginToken } from './utils/filemaker';
+import { log } from './utils/log';
 
 console.log("Juhuuu, I'm working");
 
@@ -37,6 +39,27 @@ app.use(prepareRequest);
 app.get('/health/ready/', (req: express.Request, res: express.Response) => {
   res.send({ status: '👌' });
 });
+app.get(
+  '/health/filemaker/',
+  async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    try {
+      const token = await getLoginToken();
+      if (token) {
+        res.send({ status: '👌' });
+      } else {
+        log(token);
+        next(returnError(500));
+      }
+    } catch (e) {
+      log(e);
+      next(returnError(500));
+    }
+  }
+);
 
 /**
  * Auth

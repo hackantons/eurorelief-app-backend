@@ -8,7 +8,7 @@ const FM_DBLAYOUT = String(process.env.FM_DBLAYOUT || '');
 const FM_USER = String(process.env.FM_USER || '');
 const FM_PASSWORD = String(process.env.FM_PASSWORD || '');
 
-const getLoginToken = async (): Promise<string> => {
+export const getLoginToken = async (): Promise<string> => {
   try {
     const res = await fetch(
       `${FM_HOST}/fmi/data/v1/databases/${FM_DBNAME}/sessions`,
