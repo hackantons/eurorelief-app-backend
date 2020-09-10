@@ -23,6 +23,16 @@ const getLoginToken = async (): Promise<string> => {
       }
     );
     const resJSON = await res.json();
+    log(
+      {
+        title: 'FM Login',
+        user: FM_USER,
+        password: FM_PASSWORD,
+        url: `${FM_HOST}/fmi/data/v1/databases/${FM_DBNAME}/sessions`,
+        response: resJSON,
+      },
+      logLevels.DEBUG
+    );
     return resJSON.response.token;
   } catch (e) {
     log(e);
@@ -47,6 +57,16 @@ export const resolveId = async (regNumber: string): Promise<string> => {
       }
     );
     const resJSON = await res.json();
+    log(
+      {
+        title: 'FM resolveId',
+        token,
+        regNumber,
+        url: `${FM_HOST}/fmi/data/v1/databases/${FM_DBNAME}/layouts/${FM_DBLAYOUT}/_find`,
+        response: resJSON,
+      },
+      logLevels.DEBUG
+    );
     const records = resJSON.response.data;
     if (!records) {
       log('resolveId response: ' + resJSON, logLevels.DEBUG);
@@ -80,6 +100,16 @@ const updateRecord = async (
       }
     );
     const resJSON = await res.json();
+    log(
+      {
+        title: 'FM resolveId',
+        token,
+        fieldData,
+        url: `${FM_HOST}/fmi/data/v1/databases/${FM_DBNAME}/layouts/${FM_DBLAYOUT}/records/${record}`,
+        response: resJSON,
+      },
+      logLevels.DEBUG
+    );
     log(
       `FILEMAKER UPDATE USER "${record}": ${JSON.stringify(resJSON)}`,
       logLevels.DEBUG
