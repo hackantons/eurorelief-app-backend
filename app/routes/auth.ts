@@ -45,3 +45,19 @@ export const resolveCampID = async (
     next(returnError(500));
   }
 };
+
+export const authLogout = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  try {
+    const updatedUser = await Users.update(res.locals.user, {
+      password: '',
+    });
+    res.send({ reset: !!updatedUser });
+  } catch (e) {
+    log(e);
+    next(e);
+  }
+};

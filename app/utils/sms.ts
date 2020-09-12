@@ -1,6 +1,6 @@
-import AWS from "aws-sdk";
+import AWS from 'aws-sdk';
 
-AWS.config.region = process.env.AWS_REGION || "";
+AWS.config.region = process.env.AWS_REGION || '';
 
 export const sendSMS = (
   phoneNumber: string,
@@ -11,9 +11,9 @@ export const sendSMS = (
     sns.publish(
       {
         Message: message,
-        MessageStructure: "string",
-        PhoneNumber: phoneNumber.replace("+", ""),
-        Subject: "Eurorelief notification",
+        MessageStructure: 'string',
+        PhoneNumber: phoneNumber.replace('+', ''),
+        Subject: 'Eurorelief notification',
       },
       (err, data) => {
         if (err) {
