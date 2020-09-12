@@ -1,0 +1,192 @@
+{
+  "ipcMode": null,
+  "executionRoleArn": "arn:aws:iam::682207515262:role/RoleForEuroReliefBackendDevTask",
+  "containerDefinitions": [
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": null,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/eurorelief-dev-backend",
+          "awslogs-region": "eu-west-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": null,
+      "portMappings": [
+        {
+          "hostPort": 5080,
+          "protocol": "tcp",
+          "containerPort": 5080
+        }
+      ],
+      "command": null,
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [],
+      "workingDirectory": null,
+      "secrets": [
+        {
+          "valueFrom": "ADMIN_KEY-dev",
+          "name": "ADMIN_KEY"
+        },
+        {
+          "valueFrom": "CRYPTO_KEY-dev",
+          "name": "CRYPTO_KEY"
+        },
+        {
+          "valueFrom": "CRYPTO_SHA_KEY-dev",
+          "name": "CRYPTO_SHA_KEY"
+        },
+        {
+          "valueFrom": "DATABASE_URL-dev",
+          "name": "DATABASE_URL"
+        },
+        {
+          "valueFrom": "FM_DBLAYOUT-dev",
+          "name": "FM_DBLAYOUT"
+        },
+        {
+          "valueFrom": "FM_DBNAME-dev",
+          "name": "FM_DBNAME"
+        },
+        {
+          "valueFrom": "FM_HOST-dev",
+          "name": "FM_HOST"
+        },
+        {
+          "valueFrom": "FM_PASSWORD-dev",
+          "name": "FM_PASSWORD"
+        },
+        {
+          "valueFrom": "FM_USER-dev",
+          "name": "FM_USER"
+        },
+        {
+          "valueFrom": "JWT_SECRET-dev",
+          "name": "JWT_SECRET"
+        },
+        {
+          "valueFrom": "NUMVERIFY_KEY-dev",
+          "name": "NUMVERIFY_KEY"
+        },
+        {
+          "valueFrom": "PORT-dev",
+          "name": "PORT"
+        },
+        {
+          "valueFrom": "VAPID_EMAIL-dev",
+          "name": "VAPID_EMAIL"
+        },
+        {
+          "valueFrom": "VAPID_PRIVATE_KEY-dev",
+          "name": "VAPID_PRIVATE_KEY"
+        },
+        {
+          "valueFrom": "VAPID_PUBLIC_KEY-dev",
+          "name": "VAPID_PUBLIC_KEY"
+        }
+      ],
+      "dockerSecurityOptions": null,
+      "memory": null,
+      "memoryReservation": null,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "682207515262.dkr.ecr.eu-west-1.amazonaws.com/eurorelief:004c17720ca6ad4dc219466d13aa1b2fa5a7add1",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": null,
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "eurorelief-backend-dev"
+    }
+  ],
+  "placementConstraints": [],
+  "memory": "1024",
+  "taskRoleArn": "arn:aws:iam::682207515262:role/RoleForEuroReliefBackendDevTask",
+  "compatibilities": ["EC2", "FARGATE"],
+  "taskDefinitionArn": "arn:aws:ecs:eu-west-1:682207515262:task-definition/eurorelief-dev-backend:26",
+  "family": "eurorelief-dev-backend",
+  "requiresAttributes": [
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.secrets.ssm.environment-variables"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.task-eni"
+    }
+  ],
+  "pidMode": null,
+  "requiresCompatibilities": ["FARGATE"],
+  "networkMode": "awsvpc",
+  "cpu": "256",
+  "revision": 26,
+  "status": "ACTIVE",
+  "inferenceAccelerators": null,
+  "proxyConfiguration": null,
+  "volumes": []
+}
